@@ -4,8 +4,17 @@ import 'package:listview_test/users.dart';
 import 'package:listview_test/userservice.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final Provider<Future<int>> lengthProvider =
+    Provider((ref) => UserService.getUsersLength());
+
+userProvider(int index) {
+  final Provider<Future<User>> userProvider =
+      Provider((ref) => UserService.getUser(index));
+  return userProvider;
+}
+
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -20,38 +29,22 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
+class MyHomePage extends ConsumerWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  Future<int>? _usersLengthFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _usersLengthFuture = UserService.getUsersLength();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final lengthFuture = ref.watch(lengthProvider);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
+          title: Text("Users"),
         ),
         body: FutureBuilder<int>(
-          future: _usersLengthFuture,
+          future: lengthFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator();
@@ -73,27 +66,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class UserTile extends StatefulWidget {
-  const UserTile({super.key, required this.index});
-
+class UserTile extends ConsumerWidget {
   final int index;
-
+  UserTile({required this.index});
   @override
-  State<UserTile> createState() => _UserTileState();
-}
-
-class _UserTileState extends State<UserTile> {
-  Future<User>? _userFuture;
-  @override
-  void initState() {
-    super.initState();
-    _userFuture = UserService.getUser(widget.index + 1);
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final Future<User> userFuture = ref.watch(userProvider(index + 1));
     return FutureBuilder(
-        future: _userFuture,
+        future: userFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();

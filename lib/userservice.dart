@@ -45,7 +45,6 @@ class UserService {
     } else {
       throw Exception(
           'Impossibile caricare gli utenti, errore: ${response.statusCode}');
-      ;
     }
   }
 }
