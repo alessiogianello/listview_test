@@ -17,4 +17,33 @@ class UserService {
           'Impossibile caricare gli utenti, errore: ${response.statusCode}');
     }
   }
+
+  static Future<int> getUsersLength() async {
+    const String url = 'https://jsonplaceholder.typicode.com/users';
+
+    final response = await http.get(Uri.parse(url));
+    final int len;
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      len = data.length;
+      return len;
+    } else {
+      len = 0;
+      throw Exception(
+          'Impossibile calcolare lunghezza lista utentu, errore: ${response.statusCode}');
+    }
+  }
+
+  static Future<User> getUser(index) async {
+    String url =
+        'https://jsonplaceholder.typicode.com/users/' + index.toString();
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final dynamic data = jsonDecode(response.body);
+      return User.fromJson(data);
+    } else {
+      return User(id: 0, name: "name", userName: "userName", email: "email");
+    }
+  }
 }
