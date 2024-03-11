@@ -43,7 +43,9 @@ class UserService {
       final dynamic data = jsonDecode(response.body);
       return User.fromJson(data);
     } else {
-      return User(id: 0, name: "name", userName: "userName", email: "email");
+      throw Exception(
+          'Impossibile caricare gli utenti, errore: ${response.statusCode}');
+      ;
     }
   }
 }

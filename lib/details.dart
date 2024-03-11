@@ -13,7 +13,9 @@ class Details_page extends StatelessWidget {
         children: [
           Text(user.id.toString()),
           SizedBox(height: 20),
-          Text(user.name)
+          Text(user.name),
+          SizedBox(height: 20),
+          Text(user.email),
         ],
       )),
     );

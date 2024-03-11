@@ -87,7 +87,7 @@ class _UserTileState extends State<UserTile> {
   @override
   void initState() {
     super.initState();
-    _userFuture = UserService.getUser(widget.index);
+    _userFuture = UserService.getUser(widget.index + 1);
   }
 
   @override
@@ -99,7 +99,7 @@ class _UserTileState extends State<UserTile> {
             return CircularProgressIndicator();
           }
           if (snapshot.hasError) {
-            return Text("impossibile caricare utente");
+            return Text("impossibile caricare utente ${snapshot.error}");
           }
 
           final user = snapshot.data ??
@@ -121,57 +121,3 @@ class _UserTileState extends State<UserTile> {
         });
   }
 }
-
-/*
-class _MyHomePageState extends State<MyHomePage> {
-  Future<List<User>>? _usersFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _usersFuture = UserService.getUsers();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
-        ),
-        body: FutureBuilder<List<User>>(
-          future: _usersFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            }
-            if (snapshot.hasError) {
-              return Text("Errore di caricamento: ${snapshot.error}");
-            }
-
-            final users = snapshot.data ?? [];
-
-            return ListView.builder(
-              itemCount: users.length,
-              itemBuilder: (context, index) {
-                final e = users[index];
-                print("e");
-                return ListTile(
-                    title: Row(
-                  children: [
-                    Text(e.name),
-                    const SizedBox(width: 20),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => Details_page(user: e)));
-                        },
-                        child: const Text("Dettagli"))
-                  ],
-                ));
-              }, // This trailing comma makes auto-formatting nicer for build methods.
-            );
-          },
-        ));
-  }
-} */
